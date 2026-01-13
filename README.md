@@ -171,8 +171,15 @@ The type confusion succeeds because both arrays use **legitimately signed** butt
 
 ---
 
+## Acknowledgments
+
+The CVE-2025-43529 UAF trigger, butterfly reclaim technique, and `addrof`/`fakeobj` primitive construction are based on the work of **[jir4vv1t](https://github.com/jir4vv1t/CVE-2025-43529)**. Their detailed analysis of the DFG Store Barrier bug and race condition exploitation was instrumental to this research.
+
+---
+
 ## References
 
+- [jir4vv1t/CVE-2025-43529](https://github.com/jir4vv1t/CVE-2025-43529) - Original UAF exploit and technical analysis
 - WebKit Bugzilla: 302502, 303614
 - Apple Security Updates - iOS 26
 - Google Threat Analysis Group

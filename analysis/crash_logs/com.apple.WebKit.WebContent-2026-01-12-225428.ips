@@ -1,0 +1,2213 @@
+{"app_name":"com.apple.WebKit.WebContent","timestamp":"2026-01-12 22:54:28.00 -0500","app_version":"","slice_uuid":"3f032d52-c0c3-3227-aa3d-e19dbc026c62","build_version":"8622.2.11.10.8","platform":"2","bundleID":"com.apple.WebKit.WebContent","share_with_app_devs":"0","is_first_party":"1","bug_type":"309","os_version":"iPhone OS 26.1 (23B85)","roots_installed":"0","name":"com.apple.WebKit.WebContent","incident_id":"498D4CCD-C2E4-4736-8BB6-92E08041541F"}
+{
+"uptime": 37000,
+"procRole": "Foreground",
+"version": 2,
+"userID": 501,
+"deployVersion": 210,
+"modelCode": "iPhone12,5",
+"coalitionID": 699,
+"osVersion": {
+"isEmbedded": true,
+"train": "iPhone OS 26.1",
+"releaseType": "User",
+"build": "23B85"
+},
+"captureTime": "2026-01-12 22:54:27.7485 -0500",
+"codeSigningMonitor": 1,
+"incident": "498D4CCD-C2E4-4736-8BB6-92E08041541F",
+"pid": 2739,
+"translated": false,
+"cpuType": "ARM-64",
+"roots_installed": 0,
+"bug_type": "309",
+"procLaunch": "2026-01-12 22:54:19.2842 -0500",
+"procStartAbsTime": 906992746082,
+"procExitAbsTime": 907195876228,
+"procName": "com.apple.WebKit.WebContent",
+"procPath": "/private/preboot/Cryptexes/OS/System/Library/ExtensionKit/Extensions/WebContentExtension.appex/com.apple.WebKit.WebContent",
+"bundleInfo": {
+"CFBundleVersion": "8622.2.11.10.8",
+"CFBundleIdentifier": "com.apple.WebKit.WebContent"
+},
+"parentProc": "launchd",
+"parentPid": 1,
+"coalitionName": "com.apple.mobilesafari",
+"crashReporterKey": "833b4dda16bfc29a350a43ef9c68831dcdd4c002",
+"appleIntelligenceStatus": {
+"reasons": [
+"deviceNotCapable"
+],
+"state": "unavailable"
+},
+"developerMode": 1,
+"bootProgressRegister": "0x20800004",
+"wasUnlockedSinceBoot": 1,
+"isLocked": 0,
+"throttleTimeout": 10,
+"codeSigningID": "com.apple.WebKit.WebContent",
+"codeSigningTeamID": "",
+"codeSigningFlags": 570434305,
+"codeSigningValidationCategory": 1,
+"codeSigningTrustLevel": 9,
+"codeSigningAuxiliaryInfo": 2305843009213693960,
+"instructionByteStream": {
+"beforePC": "bQwBi6ABQP0AIGAe4SEAVAIAZp5CABvLDAAAFEIoAFFfCABxaAMAVA==",
+"atPC": "bcBfuD8ADWvCIABUTQMEi6AFgDltDAGLoglA+SIgALStDwCLogEA+Q=="
+},
+"bootSessionUUID": "96455803-53F1-42C9-A095-C58830903C92",
+"jitStartAddress": 47793258496,
+"jitEndAddress": 48330162176,
+"basebandVersion": "7.00.00",
+"vmRegionInfo": "0x7ffffffffc is not in any region.  \n      REGION TYPE                 START - END      [ VSIZE] PRT/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      UNUSED SPACE AT END",
+"exception": {
+"codes": "0x0000000000000001, 0x0001fffffffffffc",
+"rawCodes": [
+1,
+562949953421308
+],
+"type": "EXC_BAD_ACCESS",
+"signal": "SIGSEGV",
+"subtype": "KERN_INVALID_ADDRESS at 0x0001fffffffffffc -> 0x0000007ffffffffc (possible pointer authentication failure)"
+},
+"termination": {
+"flags": 0,
+"code": 11,
+"namespace": "SIGNAL",
+"indicator": "Segmentation fault: 11",
+"byProc": "exc handler",
+"byPid": 2739
+},
+"vmregioninfo": "0x7ffffffffc is not in any region.  \n      REGION TYPE                 START - END      [ VSIZE] PRT/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      UNUSED SPACE AT END",
+"faultingThread": 0,
+"threads": [
+{
+"triggered": true,
+"id": 443469,
+"threadState": {
+"x": [
+{
+"value": 4605559376
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 562949953421312
+},
+{
+"value": 588
+},
+{
+"value": 4600091736
+},
+{
+"value": 1
+},
+{
+"value": 8401633280,
+"symbolLocation": 0,
+"symbol": "g_config"
+},
+{
+"value": 0
+},
+{
+"value": 17213423792
+},
+{
+"value": 17179869184
+},
+{
+"value": 1
+},
+{
+"value": 1
+},
+{
+"value": 4550820568
+},
+{
+"value": 1073741824
+},
+{
+"value": 1073741824
+},
+{
+"value": 1851542405204358072
+},
+{
+"value": 2038800778878263828,
+"symbolLocation": 2038800771885039616,
+"symbol": "llint_op_get_by_val"
+},
+{
+"value": 0
+},
+{
+"value": 4601279752
+},
+{
+"value": 4601151488
+},
+{
+"value": 4599709832
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 4550478704
+},
+{
+"value": 4600086352
+},
+{
+"value": 4553066288
+},
+{
+"value": 18446181123756130304
+},
+{
+"value": 18446181123756130306
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 11048975902639898632
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6094378800
+},
+"sp": {
+"value": 6094378448
+},
+"esr": {
+"value": 2449473540,
+"description": "(Data Abort) byte read Translation fault"
+},
+"pc": {
+"value": 6993224516,
+"matchesCrashFrame": 1
+},
+"far": {
+"value": 562949953421308
+}
+},
+"queue": "com.apple.main-thread",
+"frames": [
+{
+"imageOffset": 26399556,
+"symbol": "jsc_llint_llintOpWithMetadata__llintOpWithReturn__llintOp__commonOp__fn__fn__makeReturn__fn__fn__fn__opGetByValNotDouble_LowLevelInterpreter_asm_510",
+"symbolLocation": 12,
+"imageIndex": 1
+},
+{
+"imageOffset": 32776,
+"imageIndex": 2
+},
+{
+"imageOffset": 785708,
+"imageIndex": 2
+},
+{
+"imageOffset": 32776,
+"imageIndex": 2
+},
+{
+"imageOffset": 32872,
+"imageIndex": 2
+},
+{
+"imageOffset": 32872,
+"imageIndex": 2
+},
+{
+"imageOffset": 34120,
+"imageIndex": 2
+},
+{
+"imageOffset": 569404,
+"symbol": "JSC::Interpreter::executeCall(JSC::JSObject*, JSC::CallData const&, JSC::JSValue, JSC::ArgList const&)",
+"symbolLocation": 2559,
+"imageIndex": 1
+},
+{
+"imageOffset": 18146668,
+"symbol": "JSC::profiledCall(JSC::JSGlobalObject*, JSC::ProfilingReason, JSC::JSValue, JSC::CallData const&, JSC::JSValue, JSC::ArgList const&, WTF::NakedPtr<JSC::Exception>&)",
+"symbolLocation": 111,
+"imageIndex": 1
+},
+{
+"imageOffset": 28478224,
+"symbol": "WebCore::MicrotaskQueue::runJSMicrotask(JSC::JSGlobalObject*, JSC::VM&, JSC::QueuedTask&)",
+"symbolLocation": 263,
+"imageIndex": 3
+},
+{
+"imageOffset": 28479064,
+"symbol": "WebCore::MicrotaskQueue::performMicrotaskCheckpoint()",
+"symbolLocation": 323,
+"imageIndex": 3
+},
+{
+"imageOffset": 28270072,
+"symbol": "WebCore::EventLoopTaskGroup::performMicrotaskCheckpoint()",
+"symbolLocation": 87,
+"imageIndex": 3
+},
+{
+"imageOffset": 23433316,
+"symbol": "WebCore::JSExecState::~JSExecState()",
+"symbolLocation": 171,
+"imageIndex": 3
+},
+{
+"imageOffset": 23594660,
+"symbol": "WebCore::ScheduledAction::executeFunctionInContext(JSC::JSGlobalObject*, JSC::JSValue, WebCore::ScriptExecutionContext&)",
+"symbolLocation": 395,
+"imageIndex": 3
+},
+{
+"imageOffset": 23593576,
+"symbol": "WebCore::ScheduledAction::execute(WebCore::Document&)",
+"symbolLocation": 183,
+"imageIndex": 3
+},
+{
+"imageOffset": 36367908,
+"symbol": "WebCore::DOMTimer::fired()",
+"symbolLocation": 491,
+"imageIndex": 3
+},
+{
+"imageOffset": 36403672,
+"symbol": "WTF::Detail::CallableWrapper<WebCore::DOMTimer::DOMTimer(WebCore::ScriptExecutionContext&, WTF::Function<void (WebCore::ScriptExecutionContext&)>&&, WTF::Seconds, WebCore::DOMTimer::Type)::$_0, void>::call()",
+"symbolLocation": 51,
+"imageIndex": 3
+},
+{
+"imageOffset": 28307208,
+"symbol": "WebCore::EventLoopTimer::fired()",
+"symbolLocation": 111,
+"imageIndex": 3
+},
+{
+"imageOffset": 38650160,
+"symbol": "WTF::Detail::CallableWrapper<WebCore::ThreadTimers::setSharedTimer(WebCore::SharedTimer*)::$_0, void>::call()",
+"symbolLocation": 191,
+"imageIndex": 3
+},
+{
+"imageOffset": 39033540,
+"symbol": "WebCore::timerFired(__CFRunLoopTimer*, void*)",
+"symbolLocation": 67,
+"imageIndex": 3
+},
+{
+"imageOffset": 318464,
+"symbol": "__CFRUNLOOP_IS_CALLING_OUT_TO_A_TIMER_CALLBACK_FUNCTION__",
+"symbolLocation": 31,
+"imageIndex": 4
+},
+{
+"imageOffset": 317632,
+"symbol": "__CFRunLoopDoTimer",
+"symbolLocation": 979,
+"imageIndex": 4
+},
+{
+"imageOffset": 316468,
+"symbol": "__CFRunLoopDoTimers",
+"symbolLocation": 279,
+"imageIndex": 4
+},
+{
+"imageOffset": 121532,
+"symbol": "__CFRunLoopRun",
+"symbolLocation": 1815,
+"imageIndex": 4
+},
+{
+"imageOffset": 117356,
+"symbol": "_CFRunLoopRunSpecificWithOptions",
+"symbolLocation": 531,
+"imageIndex": 4
+},
+{
+"imageOffset": 10104160,
+"symbol": "-[NSRunLoop(NSRunLoop) runMode:beforeDate:]",
+"symbolLocation": 211,
+"imageIndex": 5
+},
+{
+"imageOffset": 38172,
+"symbol": "-[NSRunLoop(NSRunLoop) run]",
+"symbolLocation": 63,
+"imageIndex": 5
+},
+{
+"imageOffset": 122608,
+"symbol": "_xpc_objc_main",
+"symbolLocation": 335,
+"imageIndex": 6
+},
+{
+"imageOffset": 132216,
+"symbol": "_xpc_main",
+"symbolLocation": 63,
+"imageIndex": 6
+},
+{
+"imageOffset": 132696,
+"symbol": "xpc_main",
+"symbolLocation": 63,
+"imageIndex": 6
+},
+{
+"imageOffset": 221268,
+"symbol": "_EXRunningLibXPCServiceExtension.resume()",
+"symbolLocation": 1475,
+"imageIndex": 7
+},
+{
+"imageOffset": 213876,
+"symbol": "_EXRunningExtension.start(withArguments:count:)",
+"symbolLocation": 123,
+"imageIndex": 7
+},
+{
+"imageOffset": 207336,
+"symbol": "EXExtensionMain(_:_:)",
+"symbolLocation": 663,
+"imageIndex": 7
+},
+{
+"imageOffset": 1407108,
+"symbol": "NSExtensionMain",
+"symbolLocation": 199,
+"imageIndex": 5
+},
+{
+"imageOffset": 20008,
+"symbol": "start",
+"symbolLocation": 7115,
+"imageIndex": 8
+}
+]
+},
+{
+"id": 443471,
+"frames": [],
+"threadState": {
+"x": [
+{
+"value": 6094942208
+},
+{
+"value": 3331
+},
+{
+"value": 6094405632
+},
+{
+"value": 0
+},
+{
+"value": 409604
+},
+{
+"value": 18446744073709551615
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 0
+},
+"cpsr": {
+"value": 0
+},
+"fp": {
+"value": 0
+},
+"sp": {
+"value": 6094942208
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 8160057528
+},
+"far": {
+"value": 0
+}
+}
+},
+{
+"id": 443472,
+"frames": [],
+"threadState": {
+"x": [
+{
+"value": 6095515648
+},
+{
+"value": 5639
+},
+{
+"value": 6094979072
+},
+{
+"value": 0
+},
+{
+"value": 409604
+},
+{
+"value": 18446744073709551615
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 0
+},
+"cpsr": {
+"value": 0
+},
+"fp": {
+"value": 0
+},
+"sp": {
+"value": 6095515648
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 8160057528
+},
+"far": {
+"value": 0
+}
+}
+},
+{
+"id": 443473,
+"name": "JavaScriptCore libpas scavenger",
+"threadState": {
+"x": [
+{
+"value": 260
+},
+{
+"value": 0
+},
+{
+"value": 8704
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 160
+},
+{
+"value": 0
+},
+{
+"value": 99997032
+},
+{
+"value": 6096088744
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 2
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 305
+},
+{
+"value": 8425505080
+},
+{
+"value": 0
+},
+{
+"value": 4401981696
+},
+{
+"value": 4401981760
+},
+{
+"value": 6096089312
+},
+{
+"value": 99997032
+},
+{
+"value": 0
+},
+{
+"value": 8704
+},
+{
+"value": 16897
+},
+{
+"value": 17152
+},
+{
+"value": 8359415808,
+"symbolLocation": 16,
+"symbol": "JSC::LinkBuffer::s_profileCummulativeLinkedSizes"
+},
+{
+"value": 8401670144,
+"symbolLocation": 2152,
+"symbol": "bmalloc_common_primitive_heap_support"
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 8160066392
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6096088864
+},
+"sp": {
+"value": 6096088720
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 9461224916
+},
+"far": {
+"value": 0
+}
+},
+"frames": [
+{
+"imageOffset": 26068,
+"symbol": "__psynch_cvwait",
+"symbolLocation": 8,
+"imageIndex": 10
+},
+{
+"imageOffset": 11096,
+"symbol": "_pthread_cond_wait",
+"symbolLocation": 983,
+"imageIndex": 11
+},
+{
+"imageOffset": 56948,
+"symbol": "scavenger_thread_main",
+"symbolLocation": 1439,
+"imageIndex": 1
+},
+{
+"imageOffset": 17484,
+"symbol": "_pthread_start",
+"symbolLocation": 135,
+"imageIndex": 11
+},
+{
+"imageOffset": 2252,
+"symbol": "thread_start",
+"symbolLocation": 7,
+"imageIndex": 11
+}
+]
+},
+{
+"id": 443478,
+"frames": [],
+"threadState": {
+"x": [
+{
+"value": 6096662528
+},
+{
+"value": 9731
+},
+{
+"value": 6096125952
+},
+{
+"value": 0
+},
+{
+"value": 409604
+},
+{
+"value": 18446744073709551615
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 0
+},
+"cpsr": {
+"value": 0
+},
+"fp": {
+"value": 0
+},
+"sp": {
+"value": 6096662528
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 8160057528
+},
+"far": {
+"value": 0
+}
+}
+},
+{
+"id": 443480,
+"frames": [],
+"threadState": {
+"x": [
+{
+"value": 6097235968
+},
+{
+"value": 9991
+},
+{
+"value": 6096699392
+},
+{
+"value": 0
+},
+{
+"value": 409604
+},
+{
+"value": 18446744073709551615
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 0
+},
+"cpsr": {
+"value": 0
+},
+"fp": {
+"value": 0
+},
+"sp": {
+"value": 6097235968
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 8160057528
+},
+"far": {
+"value": 0
+}
+}
+},
+{
+"id": 443503,
+"name": "JIT Worklist Helper Thread",
+"threadState": {
+"x": [
+{
+"value": 260
+},
+{
+"value": 0
+},
+{
+"value": 8192
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 160
+},
+{
+"value": 9
+},
+{
+"value": 999999791
+},
+{
+"value": 6097808600
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 2
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 305
+},
+{
+"value": 8425505080
+},
+{
+"value": 0
+},
+{
+"value": 4550656720
+},
+{
+"value": 4550656784
+},
+{
+"value": 6097809632
+},
+{
+"value": 999999791
+},
+{
+"value": 9
+},
+{
+"value": 8192
+},
+{
+"value": 8193
+},
+{
+"value": 8448
+},
+{
+"value": 4551394320
+},
+{
+"value": 4550656704
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 8160066392
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6097808720
+},
+"sp": {
+"value": 6097808576
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 9461224916
+},
+"far": {
+"value": 0
+}
+},
+"frames": [
+{
+"imageOffset": 26068,
+"symbol": "__psynch_cvwait",
+"symbolLocation": 8,
+"imageIndex": 10
+},
+{
+"imageOffset": 11096,
+"symbol": "_pthread_cond_wait",
+"symbolLocation": 983,
+"imageIndex": 11
+},
+{
+"imageOffset": 2162036,
+"symbol": "WTF::ThreadCondition::timedWait(WTF::Mutex&, WTF::WallTime)",
+"symbolLocation": 239,
+"imageIndex": 1
+},
+{
+"imageOffset": 2159836,
+"symbol": "WTF::ParkingLot::parkConditionallyImpl(void const*, WTF::ScopedLambda<bool ()> const&, WTF::ScopedLambda<void ()> const&, WTF::TimeWithDynamicClockType const&)",
+"symbolLocation": 4155,
+"imageIndex": 1
+},
+{
+"imageOffset": 2113412,
+"symbol": "WTF::Detail::CallableWrapper<WTF::AutomaticThread::start(WTF::AbstractLocker const&)::$_0, void>::call()",
+"symbolLocation": 471,
+"imageIndex": 1
+},
+{
+"imageOffset": 1849912,
+"symbol": "WTF::Thread::entryPoint(WTF::Thread::NewThreadContext*)",
+"symbolLocation": 367,
+"imageIndex": 1
+},
+{
+"imageOffset": 1850136,
+"symbol": "WTF::wtfThreadEntryPoint(void*)",
+"symbolLocation": 15,
+"imageIndex": 1
+},
+{
+"imageOffset": 17484,
+"symbol": "_pthread_start",
+"symbolLocation": 135,
+"imageIndex": 11
+},
+{
+"imageOffset": 2252,
+"symbol": "thread_start",
+"symbolLocation": 7,
+"imageIndex": 11
+}
+]
+},
+{
+"id": 443504,
+"name": "Heap Helper Thread",
+"threadState": {
+"x": [
+{
+"value": 260
+},
+{
+"value": 0
+},
+{
+"value": 16640
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 160
+},
+{
+"value": 9
+},
+{
+"value": 999999845
+},
+{
+"value": 6098382040
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 2
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 305
+},
+{
+"value": 8425505080
+},
+{
+"value": 0
+},
+{
+"value": 4551344368
+},
+{
+"value": 4551344432
+},
+{
+"value": 6098383072
+},
+{
+"value": 999999845
+},
+{
+"value": 9
+},
+{
+"value": 16640
+},
+{
+"value": 16641
+},
+{
+"value": 16896
+},
+{
+"value": 4550723088
+},
+{
+"value": 4551344352
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 8160066392
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6098382160
+},
+"sp": {
+"value": 6098382016
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 9461224916
+},
+"far": {
+"value": 0
+}
+},
+"frames": [
+{
+"imageOffset": 26068,
+"symbol": "__psynch_cvwait",
+"symbolLocation": 8,
+"imageIndex": 10
+},
+{
+"imageOffset": 11096,
+"symbol": "_pthread_cond_wait",
+"symbolLocation": 983,
+"imageIndex": 11
+},
+{
+"imageOffset": 2162036,
+"symbol": "WTF::ThreadCondition::timedWait(WTF::Mutex&, WTF::WallTime)",
+"symbolLocation": 239,
+"imageIndex": 1
+},
+{
+"imageOffset": 2159836,
+"symbol": "WTF::ParkingLot::parkConditionallyImpl(void const*, WTF::ScopedLambda<bool ()> const&, WTF::ScopedLambda<void ()> const&, WTF::TimeWithDynamicClockType const&)",
+"symbolLocation": 4155,
+"imageIndex": 1
+},
+{
+"imageOffset": 2113412,
+"symbol": "WTF::Detail::CallableWrapper<WTF::AutomaticThread::start(WTF::AbstractLocker const&)::$_0, void>::call()",
+"symbolLocation": 471,
+"imageIndex": 1
+},
+{
+"imageOffset": 1849912,
+"symbol": "WTF::Thread::entryPoint(WTF::Thread::NewThreadContext*)",
+"symbolLocation": 367,
+"imageIndex": 1
+},
+{
+"imageOffset": 1850136,
+"symbol": "WTF::wtfThreadEntryPoint(void*)",
+"symbolLocation": 15,
+"imageIndex": 1
+},
+{
+"imageOffset": 17484,
+"symbol": "_pthread_start",
+"symbolLocation": 135,
+"imageIndex": 11
+},
+{
+"imageOffset": 2252,
+"symbol": "thread_start",
+"symbolLocation": 7,
+"imageIndex": 11
+}
+]
+},
+{
+"id": 443505,
+"name": "Heap Helper Thread",
+"threadState": {
+"x": [
+{
+"value": 260
+},
+{
+"value": 0
+},
+{
+"value": 19456
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 160
+},
+{
+"value": 9
+},
+{
+"value": 999999660
+},
+{
+"value": 6098955480
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 2
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 305
+},
+{
+"value": 8425505080
+},
+{
+"value": 0
+},
+{
+"value": 4551459056
+},
+{
+"value": 4551459120
+},
+{
+"value": 6098956512
+},
+{
+"value": 999999660
+},
+{
+"value": 9
+},
+{
+"value": 19456
+},
+{
+"value": 19457
+},
+{
+"value": 19712
+},
+{
+"value": 4551475472
+},
+{
+"value": 4551459040
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 8160066392
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6098955600
+},
+"sp": {
+"value": 6098955456
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 9461224916
+},
+"far": {
+"value": 0
+}
+},
+"frames": [
+{
+"imageOffset": 26068,
+"symbol": "__psynch_cvwait",
+"symbolLocation": 8,
+"imageIndex": 10
+},
+{
+"imageOffset": 11096,
+"symbol": "_pthread_cond_wait",
+"symbolLocation": 983,
+"imageIndex": 11
+},
+{
+"imageOffset": 2162036,
+"symbol": "WTF::ThreadCondition::timedWait(WTF::Mutex&, WTF::WallTime)",
+"symbolLocation": 239,
+"imageIndex": 1
+},
+{
+"imageOffset": 2159836,
+"symbol": "WTF::ParkingLot::parkConditionallyImpl(void const*, WTF::ScopedLambda<bool ()> const&, WTF::ScopedLambda<void ()> const&, WTF::TimeWithDynamicClockType const&)",
+"symbolLocation": 4155,
+"imageIndex": 1
+},
+{
+"imageOffset": 2113412,
+"symbol": "WTF::Detail::CallableWrapper<WTF::AutomaticThread::start(WTF::AbstractLocker const&)::$_0, void>::call()",
+"symbolLocation": 471,
+"imageIndex": 1
+},
+{
+"imageOffset": 1849912,
+"symbol": "WTF::Thread::entryPoint(WTF::Thread::NewThreadContext*)",
+"symbolLocation": 367,
+"imageIndex": 1
+},
+{
+"imageOffset": 1850136,
+"symbol": "WTF::wtfThreadEntryPoint(void*)",
+"symbolLocation": 15,
+"imageIndex": 1
+},
+{
+"imageOffset": 17484,
+"symbol": "_pthread_start",
+"symbolLocation": 135,
+"imageIndex": 11
+},
+{
+"imageOffset": 2252,
+"symbol": "thread_start",
+"symbolLocation": 7,
+"imageIndex": 11
+}
+]
+},
+{
+"id": 443506,
+"name": "Heap Helper Thread",
+"threadState": {
+"x": [
+{
+"value": 260
+},
+{
+"value": 0
+},
+{
+"value": 17664
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 160
+},
+{
+"value": 9
+},
+{
+"value": 999998653
+},
+{
+"value": 6099528920
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 2
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 305
+},
+{
+"value": 8425505080
+},
+{
+"value": 0
+},
+{
+"value": 4551377136
+},
+{
+"value": 4551377200
+},
+{
+"value": 6099529952
+},
+{
+"value": 999998653
+},
+{
+"value": 9
+},
+{
+"value": 17664
+},
+{
+"value": 17665
+},
+{
+"value": 17920
+},
+{
+"value": 4547363600
+},
+{
+"value": 4551377120
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 8160066392
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6099529040
+},
+"sp": {
+"value": 6099528896
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 9461224916
+},
+"far": {
+"value": 0
+}
+},
+"frames": [
+{
+"imageOffset": 26068,
+"symbol": "__psynch_cvwait",
+"symbolLocation": 8,
+"imageIndex": 10
+},
+{
+"imageOffset": 11096,
+"symbol": "_pthread_cond_wait",
+"symbolLocation": 983,
+"imageIndex": 11
+},
+{
+"imageOffset": 2162036,
+"symbol": "WTF::ThreadCondition::timedWait(WTF::Mutex&, WTF::WallTime)",
+"symbolLocation": 239,
+"imageIndex": 1
+},
+{
+"imageOffset": 2159836,
+"symbol": "WTF::ParkingLot::parkConditionallyImpl(void const*, WTF::ScopedLambda<bool ()> const&, WTF::ScopedLambda<void ()> const&, WTF::TimeWithDynamicClockType const&)",
+"symbolLocation": 4155,
+"imageIndex": 1
+},
+{
+"imageOffset": 2113412,
+"symbol": "WTF::Detail::CallableWrapper<WTF::AutomaticThread::start(WTF::AbstractLocker const&)::$_0, void>::call()",
+"symbolLocation": 471,
+"imageIndex": 1
+},
+{
+"imageOffset": 1849912,
+"symbol": "WTF::Thread::entryPoint(WTF::Thread::NewThreadContext*)",
+"symbolLocation": 367,
+"imageIndex": 1
+},
+{
+"imageOffset": 1850136,
+"symbol": "WTF::wtfThreadEntryPoint(void*)",
+"symbolLocation": 15,
+"imageIndex": 1
+},
+{
+"imageOffset": 17484,
+"symbol": "_pthread_start",
+"symbolLocation": 135,
+"imageIndex": 11
+},
+{
+"imageOffset": 2252,
+"symbol": "thread_start",
+"symbolLocation": 7,
+"imageIndex": 11
+}
+]
+},
+{
+"id": 443507,
+"name": "JIT Worklist Helper Thread",
+"threadState": {
+"x": [
+{
+"value": 260
+},
+{
+"value": 0
+},
+{
+"value": 768
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 160
+},
+{
+"value": 9
+},
+{
+"value": 999998269
+},
+{
+"value": 6100102360
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 2
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 305
+},
+{
+"value": 8425505080
+},
+{
+"value": 0
+},
+{
+"value": 4552918192
+},
+{
+"value": 4552918256
+},
+{
+"value": 6100103392
+},
+{
+"value": 999998269
+},
+{
+"value": 9
+},
+{
+"value": 768
+},
+{
+"value": 769
+},
+{
+"value": 1024
+},
+{
+"value": 4551870480
+},
+{
+"value": 4552918176
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 8160066392
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6100102480
+},
+"sp": {
+"value": 6100102336
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 9461224916
+},
+"far": {
+"value": 0
+}
+},
+"frames": [
+{
+"imageOffset": 26068,
+"symbol": "__psynch_cvwait",
+"symbolLocation": 8,
+"imageIndex": 10
+},
+{
+"imageOffset": 11096,
+"symbol": "_pthread_cond_wait",
+"symbolLocation": 983,
+"imageIndex": 11
+},
+{
+"imageOffset": 2162036,
+"symbol": "WTF::ThreadCondition::timedWait(WTF::Mutex&, WTF::WallTime)",
+"symbolLocation": 239,
+"imageIndex": 1
+},
+{
+"imageOffset": 2159836,
+"symbol": "WTF::ParkingLot::parkConditionallyImpl(void const*, WTF::ScopedLambda<bool ()> const&, WTF::ScopedLambda<void ()> const&, WTF::TimeWithDynamicClockType const&)",
+"symbolLocation": 4155,
+"imageIndex": 1
+},
+{
+"imageOffset": 2113412,
+"symbol": "WTF::Detail::CallableWrapper<WTF::AutomaticThread::start(WTF::AbstractLocker const&)::$_0, void>::call()",
+"symbolLocation": 471,
+"imageIndex": 1
+},
+{
+"imageOffset": 1849912,
+"symbol": "WTF::Thread::entryPoint(WTF::Thread::NewThreadContext*)",
+"symbolLocation": 367,
+"imageIndex": 1
+},
+{
+"imageOffset": 1850136,
+"symbol": "WTF::wtfThreadEntryPoint(void*)",
+"symbolLocation": 15,
+"imageIndex": 1
+},
+{
+"imageOffset": 17484,
+"symbol": "_pthread_start",
+"symbolLocation": 135,
+"imageIndex": 11
+},
+{
+"imageOffset": 2252,
+"symbol": "thread_start",
+"symbolLocation": 7,
+"imageIndex": 11
+}
+]
+},
+{
+"id": 443542,
+"name": "JIT Worklist Helper Thread",
+"threadState": {
+"x": [
+{
+"value": 260
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 160
+},
+{
+"value": 9
+},
+{
+"value": 999991936
+},
+{
+"value": 6100675800
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 2
+},
+{
+"value": 2
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 0
+},
+{
+"value": 305
+},
+{
+"value": 8425505080
+},
+{
+"value": 0
+},
+{
+"value": 4554621168
+},
+{
+"value": 4554621232
+},
+{
+"value": 6100676832
+},
+{
+"value": 999991936
+},
+{
+"value": 9
+},
+{
+"value": 0
+},
+{
+"value": 1
+},
+{
+"value": 256
+},
+{
+"value": 4552360208
+},
+{
+"value": 4554621152
+}
+],
+"flavor": "ARM_THREAD_STATE64",
+"lr": {
+"value": 8160066392
+},
+"cpsr": {
+"value": 1610612736
+},
+"fp": {
+"value": 6100675920
+},
+"sp": {
+"value": 6100675776
+},
+"esr": {
+"value": 1442840704,
+"description": "(Syscall)"
+},
+"pc": {
+"value": 9461224916
+},
+"far": {
+"value": 0
+}
+},
+"frames": [
+{
+"imageOffset": 26068,
+"symbol": "__psynch_cvwait",
+"symbolLocation": 8,
+"imageIndex": 10
+},
+{
+"imageOffset": 11096,
+"symbol": "_pthread_cond_wait",
+"symbolLocation": 983,
+"imageIndex": 11
+},
+{
+"imageOffset": 2162036,
+"symbol": "WTF::ThreadCondition::timedWait(WTF::Mutex&, WTF::WallTime)",
+"symbolLocation": 239,
+"imageIndex": 1
+},
+{
+"imageOffset": 2159836,
+"symbol": "WTF::ParkingLot::parkConditionallyImpl(void const*, WTF::ScopedLambda<bool ()> const&, WTF::ScopedLambda<void ()> const&, WTF::TimeWithDynamicClockType const&)",
+"symbolLocation": 4155,
+"imageIndex": 1
+},
+{
+"imageOffset": 2113412,
+"symbol": "WTF::Detail::CallableWrapper<WTF::AutomaticThread::start(WTF::AbstractLocker const&)::$_0, void>::call()",
+"symbolLocation": 471,
+"imageIndex": 1
+},
+{
+"imageOffset": 1849912,
+"symbol": "WTF::Thread::entryPoint(WTF::Thread::NewThreadContext*)",
+"symbolLocation": 367,
+"imageIndex": 1
+},
+{
+"imageOffset": 1850136,
+"symbol": "WTF::wtfThreadEntryPoint(void*)",
+"symbolLocation": 15,
+"imageIndex": 1
+},
+{
+"imageOffset": 17484,
+"symbol": "_pthread_start",
+"symbolLocation": 135,
+"imageIndex": 11
+},
+{
+"imageOffset": 2252,
+"symbol": "thread_start",
+"symbolLocation": 7,
+"imageIndex": 11
+}
+]
+}
+],
+"usedImages": [
+{
+"source": "P",
+"arch": "arm64e",
+"base": 4372496384,
+"size": 32768,
+"uuid": "3f032d52-c0c3-3227-aa3d-e19dbc026c62",
+"path": "/System/Library/ExtensionKit/Extensions/WebContentExtension.appex/com.apple.WebKit.WebContent",
+"name": "com.apple.WebKit.WebContent"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 6966824960,
+"size": 28423328,
+"uuid": "9e1fe0bc-e8d2-3653-a93c-b2adcc9ef055",
+"path": "/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore",
+"name": "JavaScriptCore"
+},
+{
+"size": 536903680,
+"source": "J",
+"base": 47793258496,
+"name": "JIT",
+"uuid": "00000000-0000-0000-0000-000000000000"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 7079821312,
+"size": 56491648,
+"uuid": "f20d860b-7996-3190-9848-e78aeefc49b7",
+"path": "/System/Library/PrivateFrameworks/WebCore.framework/WebCore",
+"name": "WebCore"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 6616129536,
+"size": 5785088,
+"uuid": "b4a0233b-f37d-3ef6-a977-e4f36199c5a4",
+"path": "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+"name": "CoreFoundation"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 6572572672,
+"size": 14968800,
+"uuid": "218da4dc-727a-3341-b59e-8fdb39a2d7c4",
+"path": "/System/Library/Frameworks/Foundation.framework/Foundation",
+"name": "Foundation"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 6953234432,
+"size": 335776,
+"uuid": "d5e4a802-dd5d-31dd-9179-67cb206ae3c2",
+"path": "/usr/lib/system/libxpc.dylib",
+"name": "libxpc.dylib"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 6640160768,
+"size": 1166816,
+"uuid": "b9c3fd63-e323-333a-96a3-a96e751184ff",
+"path": "/System/Library/Frameworks/ExtensionFoundation.framework/ExtensionFoundation",
+"name": "ExtensionFoundation"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 6565994496,
+"size": 649944,
+"uuid": "ef27e386-3cff-3752-b152-d96a0aa9effd",
+"path": "/usr/lib/dyld",
+"name": "dyld"
+},
+{
+"size": 0,
+"source": "A",
+"base": 0,
+"uuid": "00000000-0000-0000-0000-000000000000"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 9461198848,
+"size": 240940,
+"uuid": "ff136c45-738b-3f6e-82e5-7340e51a1478",
+"path": "/usr/lib/system/libsystem_kernel.dylib",
+"name": "libsystem_kernel.dylib"
+},
+{
+"source": "P",
+"arch": "arm64e",
+"base": 8160055296,
+"size": 50256,
+"uuid": "6e1be86b-581a-3067-9065-3412103e1df4",
+"path": "/usr/lib/system/libsystem_pthread.dylib",
+"name": "libsystem_pthread.dylib"
+}
+],
+"sharedCache": {
+"base": 6564855808,
+"size": 5078695936,
+"uuid": "2899ae9d-cba7-3a6f-bcc0-6b126e74a05a"
+},
+"vmSummary": "ReadOnly portion of Libraries: Total=1.6G resident=0K(0%) swapped_out_or_unallocated=1.6G(100%)\nWritable regions: Total=16.6G written=481K(0%) resident=481K(0%) swapped_out=0K(0%) unallocated=16.6G(100%)\n\n                                VIRTUAL   REGION \nREGION TYPE                        SIZE    COUNT (non-coalesced) \n===========                     =======  ======= \nCoreServices                        16K        1 \nDispatch continuations            6144K        1 \nJS JIT generated code            512.0M        3 \nJS VM Gigacage                   425.9M        3 \nJS VM Gigacage (reserved)         15.6G        1         reserved VM address space (unallocated)\nKernel Alloc Once                   32K        1 \nMALLOC                            22.6M      132 \nMALLOC guard page                 3232K        4 \nMALLOC_SMALL                      2064K      122 \nMemory Tag 240                      16K        1 \nSTACK GUARD                        192K       12 \nStack                             6992K       12 \nVM_ALLOCATE                       6736K        6 \nWebKit Malloc                    256.1M       11 \n__AUTH                            7723K      689 \n__AUTH_CONST                     100.4M     1078 \n__CTF                               824        1 \n__DATA                            36.8M     1023 \n__DATA_CONST                      33.0M     1083 \n__DATA_DIRTY                      9523K      951 \n__FONT_DATA                        2352        1 \n__INFO_FILTER                         8        1 \n__LINKEDIT                       177.5M        2 \n__LLVM_COV                          54K        1 \n__OBJC_RO                         84.0M        1 \n__OBJC_RW                         3166K        1 \n__TEXT                             1.5G     1096 \n__TEXT (graphics)                   32K        1 \n__TPRO_CONST                       128K        2 \ndyld private memory                160K        4 \nmapped file                       49.6M       12 \npage table in kernel               481K        1 \nshared memory                       32K        1 \n===========                     =======  ======= \nTOTAL                             18.7G     6259 \nTOTAL, minus reserved VM space     3.2G     6259 \n",
+"legacyInfo": {
+"threadTriggered": {
+"queue": "com.apple.main-thread"
+}
+},
+"logWritingSignature": "60d5756436994622b25892143fea32b4f975bbe9",
+"trialInfo": {
+"rollouts": [
+{
+"rolloutId": "64628732bf2f5257dedc8988",
+"factorPackIds": [],
+"deploymentId": 240000001
+},
+{
+"rolloutId": "661464ecda55e5192b100804",
+"factorPackIds": [
+"66a29ca9bda2a62b1a690387"
+],
+"deploymentId": 240000005
+}
+],
+"experiments": []
+}
+}

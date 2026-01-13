@@ -1,6 +1,6 @@
 # WebKit-UAF-ANGLE-OOB-Analysis (CVE-2025-43529, CVE-2025-14174)
 
-**Author:** [0xjf](https://x.com/zeroxjf)<br>
+**Author:** [zeroxjf](https://x.com/zeroxjf)<br>
 **Status:** Work in Progress<br>
 **Test Device:** iPhone 11 Pro Max, iOS 26.1<br>
 **Last Updated:** January 2026

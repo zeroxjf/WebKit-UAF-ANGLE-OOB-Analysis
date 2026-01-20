@@ -14,8 +14,7 @@ Notes and PoC material for a WebKit/ANGLE chain on iOS 26.1. This repo is not a 
 
 The CVE-2025-43529 UAF trigger, butterfly reclaim, and `addrof`/`fakeobj` primitives are based on **[jir4vv1t's work](https://github.com/jir4vv1t/CVE-2025-43529)**. My additions are the ANGLE OOB plumbing, PAC-focused analysis, and iOS 26.1 validation.
 
-**Note: AI assisted with probe analysis; findings were manually validated before publication.
-**
+Note: AI assisted with probe analysis; findings were manually validated before publication.
 ---
 
 ## Overview

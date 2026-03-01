@@ -1,0 +1,9 @@
+# Keep only the writeup + PoC content in this repo.
+*
+!.gitignore
+!README.md
+!poc/
+!poc/**
+
+# Ignore metadata/artifacts even inside kept paths.
+**/.DS_Store

@@ -212,21 +212,10 @@ This repository keeps both paths in one probe to study:
 ## Repository layout
 
 ```text
+├── .gitignore
 ├── README.md
-├── AGENTS.md
-├── poc/
-│   └── chained_exploit_probe.html
-└── analysis/
-    ├── angle_call_chain.md
-    ├── pac_analysis.md
-    ├── crash_logs/
-    ├── frida/
-    │   ├── gpu_angle_path_trace.js
-    │   └── webcontent_webgl_trace.js
-    └── tools/
-        ├── beacon_http_server.py
-        ├── vphone_chain_watchdog.sh
-        └── vphone_recover.sh
+└── poc/
+    └── chained_exploit_probe.html
 ```
 
 ---

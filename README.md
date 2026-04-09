@@ -171,7 +171,7 @@ The `read64`/`write64` primitives use a **3-tier strategy** to handle the Struct
 
 3. **Watchdog**: Every Nth call runs a self-test (write+read marker at a known address) to detect if the UAF-based primitive has degraded due to GC.
 
-**Known limitation — NaN hole**: If the 8 bytes at the target address form an IEEE 754 NaN pattern (exponent bits all 1s, fraction ≠ 0), JSC canonicalizes it to `0x7ff8000000000000`. This affects ~0.01% of possible 64-bit values.
+**Known limitation — NaN hole**: If the 8 bytes at the target address form an IEEE 754 NaN pattern (exponent bits all 1s, fraction ≠ 0), JSC canonicalizes it to `0x7ff8000000000000`. This affects ~0.098% of possible 64-bit values.
 
 ### Alternative bypass strategies explored
 

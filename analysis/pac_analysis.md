@@ -206,11 +206,47 @@ arm64e PAC effectively prevents the traditional fake object technique for achiev
 - **fakeobj**: Working (object reference creation)
 - **Address leaking**: Working (20+ addresses)
 
-But fails to achieve:
-- **read64/write64**: Blocked by PAC on m_vector/butterfly
+### read64/write64 Implementation (New)
 
-Further research is needed to bypass PAC or find alternative primitives.
+The `read64`/`write64` primitives have been implemented using a **3-tier strategy** that addresses the StructureID validation problem:
+
+#### Tier 1: Fast Path (Direct Inline-Slot Access)
+```
+fakeobj(addr - 0x10).slot0  →  reads 8 bytes at addr
+```
+Works when the JSCell header at `(addr - 0x10)` contains a valid StructureID. Succeeds for known JSC heap objects; fails for arbitrary addresses.
+
+#### Tier 2: Reliable Path (StructureID Overwrite)
+```
+1. saved = read(addr - 0x10)         // Save header
+2. write(addr - 0x10, knownHeader)   // Plant valid StructureID
+3. val = fakeobj(addr - 0x10).slot0  // Read target
+4. write(addr - 0x10, saved)         // Restore header
+```
+Uses a StructureID harvested from spray objects via heap adjacency. The harvested header belongs to objects with `slot0-slot5` property layout, ensuring the engine looks for `.slot0` at offset `+0x10`.
+
+#### Tier 3: Watchdog (Primitive Health Check)
+Periodically writes a marker to a known address and reads it back. If the check fails, increments a failure counter and warns about primitive degradation.
+
+### Known Limitation: NaN Hole
+JSC's NaN-boxing canonicalizes any IEEE 754 NaN pattern to `0x7ff8000000000000`. This means ~2^53 out of 2^64 possible 64-bit values cannot be distinguished from each other when read as float64 properties.
+
+Affected values:
+- `0x7ff0000000000001` through `0x7fffffffffffffff` (positive NaN)
+- `0xfff0000000000001` through `0xffffffffffffffff` (negative NaN)
+
+### Alternative Bypass Strategies Explored
+
+#### Phase 3B: WebAssembly Memory
+WebAssembly.Memory's backing store is a large mmap'd region that may not require PAC authentication. The PoC probes for this by:
+1. Allocating `new WebAssembly.Memory({initial: 1})`
+2. Leaking the buffer address via addrof
+3. Scanning internal fields via inline-slot reads
+4. Testing whether the backing store pointer has PAC bits set
+
+#### Phase 3D: Signed Butterfly Pointer Stealing
+Using heap adjacency with diff=0x08 between objects, one object's inline slot 0 overlaps with the next object's butterfly pointer. Since this butterfly was legitimately signed by JSC, we can read the PAC-signed pointer and potentially reuse it for a fake JSArray.
 
 ---
 
-**Last Updated**: January 2026
+**Last Updated**: April 2026

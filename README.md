@@ -86,6 +86,21 @@ fake = boxed_arr[0];          // Read as object = fakeobj
 - **Address leaking:** 20+ object addresses captured per run
 - **Inline-storage read/write:** Verified against known inline slots (object-address-based)
 - **Arbitrary R/W:** Not proven; backing-store scan proof fails in current runs
+- **Primitive degradation:** read64/write64 work during Stage 1 but degrade before Stage 4 (see below)
+
+### Primitive degradation problem
+
+The key blocker for proving arbitrary R/W is **primitive degradation** between stages:
+
+1. During Stage 1, the UAF reclaim succeeds and `boxed_arr`/`unboxed_arr` share a butterfly → inline storage read/write tests pass
+2. Stages 2 and 3 allocate PBO buffers, textures, and corruption targets → these allocations trigger GC
+3. GC collects the freed Date (or reallocates the shared butterfly memory) → the `boxed_arr`/`unboxed_arr` overlap breaks
+4. Stage 4's `simpleRead64`/`simpleWrite64` use the now-broken overlap → all reads return NaN (`0x7ff8000000000000`)
+
+**Mitigation approaches under investigation:**
+- Run validation phases (JSCell dump, backing-store scan) within Stage 1's critical window before GC invalidation
+- Complete StructureID harvest via `buildStablePrimitives()` while primitives are alive
+- Explore Wasm memory backing store as a PAC-free, GC-stable read/write surface
 
 ---
 
@@ -114,7 +129,9 @@ gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT32F,
 
 ### What's blocking full exploitation
 
-On arm64e (iPhone 11 Pro Max), **Pointer Authentication Codes** protect critical JSC pointers:
+Two factors block full exploitation:
+
+**1. Pointer Authentication (PAC)** — On arm64e (iPhone 11 Pro Max), PAC protects critical JSC pointers:
 
 | Pointer | Protected | Result |
 |---------|-----------|--------|
@@ -129,6 +146,8 @@ KERN_INVALID_ADDRESS at 0x0001fffffffffffc -> 0x0000007ffffffffc
 (possible pointer authentication failure)
 ```
 
+**2. Primitive degradation** — The UAF butterfly sharing is ephemeral. The inline-storage PAC bypass (read via `fakeobj(addr-0x10).slot0`) works during Stage 1's critical window, but by Stage 4, GC has been triggered by intermediate allocations and the shared butterfly is gone. All `read64`/`write64` calls then return NaN.
+
 ### Why the original confusion works
 
 The type confusion succeeds because both arrays use **legitimately signed** butterfly pointers - we're just reinterpreting the same memory. Fake objects with arbitrary unsigned pointers crash on PAC check.
@@ -139,6 +158,8 @@ The type confusion succeeds because both arrays use **legitimately signed** butt
 2. Gadgets that sign arbitrary pointers
 3. Leveraging the ANGLE OOB differently
 4. Alternative primitives that don't require fake objects
+5. Stabilize UAF primitives by running validation within Stage 1's critical window
+6. Wasm memory backing store as PAC-free, GC-stable read/write surface
 
 ---
 
@@ -186,11 +207,14 @@ The `read64`/`write64` primitives use a **3-tier strategy** to handle the Struct
 ## Evidence summary (latest probe run)
 
 - **Verified:** `addrof`, `fakeobj`, address leaks, inline-slot read/write on known objects
+- **Verified (Stage 1 only):** `read64`/`write64` inline storage tests pass during critical window
 - **Implemented:** `read64`/`write64` with 3-tier strategy (fast path, StructureID overwrite, watchdog)
+- **Implemented:** `buildStablePrimitives` called during Stage 1 for StructureID harvest
 - **Probed:** Wasm PAC-free backing store detection, butterfly pointer stealing via adjacency
-- **Diagnosed:** NaN-hole in read path (~0.01% blind spot), StructureID validation requirements
+- **Diagnosed:** NaN-hole in read path (~0.098% blind spot), StructureID validation requirements
+- **Diagnosed:** Primitive degradation — UAF butterfly invalidated by GC between Stage 1 and Stage 4
 - **Unverified:** arbitrary `read64`/`write64` backing-store round-trip proof, renderer→GPU escape chain, sandbox escape
-- **ANGLE probe:** WebGL2 PBO path implemented; trigger not confirmed in current runs
+- **ANGLE probe:** WebGL2 PBO path triggers with NO_ERROR; ANGLE in-process corruption not detected
 
 ---
 
@@ -209,10 +233,10 @@ The `read64`/`write64` primitives use a **3-tier strategy** to handle the Struct
 
 | Stage | Function | Description |
 |-------|----------|-------------|
-| 1 | `runStage1()` | WebKit UAF trigger, butterfly reclaim, addrof/fakeobj, read64/write64 construction |
+| 1 | `runStage1()` | WebKit UAF trigger, butterfly reclaim, addrof/fakeobj, BSP StructureID harvest, read64/write64 construction |
 | 2 | `runStage2()` | Corruption target verification |
 | 3 | `runStage3()` | ANGLE OOB write trigger (CVE-2025-14174) |
-| 4 | `runStage4()` | Validation proofs: backing-store round-trip, JSCell dumps, JIT leak, dyld read |
+| 4 | `runStage4()` | Validation proofs: early health check, backing-store round-trip, JSCell dumps, JIT leak, dyld read, BSP results |
 
 ---
 

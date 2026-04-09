@@ -228,6 +228,25 @@ Uses a StructureID harvested from spray objects via heap adjacency. The harveste
 #### Tier 3: Watchdog (Primitive Health Check)
 Periodically writes a marker to a known address and reads it back. If the check fails, increments a failure counter and warns about primitive degradation.
 
+### Known Limitation: Primitive Degradation
+
+The most critical limitation is **primitive degradation between stages**. The `simpleRead64`/`simpleWrite64` functions depend on the `boxed_arr`/`unboxed_arr` butterfly overlap created by the UAF reclaim. This overlap is ephemeral:
+
+1. Stage 1 succeeds: inline storage tests pass, read64/write64 constructed
+2. Stages 2/3 allocate buffers and textures → trigger GC
+3. GC invalidates the shared butterfly → `simpleRead64` returns NaN for all addresses
+4. Stage 4 validation fails: all headers read as `0x7ff8000000000000` (canonical NaN)
+
+The reliable path (Tier 2) cannot help because it depends on `simpleRead64`/`simpleWrite64` itself — it's a circular dependency. The StructureID overwrite path saves the header via simpleRead64 (which fails), writes via simpleWrite64 (which fails), reads via simpleRead64 (which fails).
+
+**Observed in probe runs:**
+```
+Phase 4.1: ArrayBuffer @ 0x10bc10988: sid=0x0 idx=0x0 type=0x0 flags=0xf8 state=0x7f [✗]
+```
+The `flags=0xf8 state=0x7f` correspond to the upper bytes of `0x7ff8000000000000` (canonical NaN), confirming reads return NaN rather than actual memory contents.
+
+**Mitigation:** `buildStablePrimitives()` is now called during Stage 1 to harvest StructureIDs while primitives are alive. Future work should move validation proofs into the Stage 1 critical window.
+
 ### Known Limitation: NaN Hole
 JSC's NaN-boxing canonicalizes any IEEE 754 NaN pattern to `0x7ff8000000000000`. This means ~2^53 out of 2^64 possible 64-bit values cannot be distinguished from each other when read as float64 properties.
 

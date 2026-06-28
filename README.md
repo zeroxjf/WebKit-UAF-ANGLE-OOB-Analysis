@@ -1,10 +1,10 @@
 # WebKit-UAF-ANGLE-OOB-Analysis (CVE-2025-43529, CVE-2025-14174)
 
-Notes and PoC material for a WebKit/ANGLE chain on iOS 26.1. This repo is not a full exploit; it tracks the pieces that are verified and the parts that are still failing.
+Notes and PoC material for a WebKit/ANGLE chain on iOS 26.1. This is not a full exploit; it separates verified primitives from the pieces that still fail.
 
 **Author:** [zeroxjf](https://x.com/zeroxjf)<br>
 **Based on:** [jir4vv1t's CVE-2025-43529 exploit](https://github.com/jir4vv1t/CVE-2025-43529)<br>
-**Status:** Work in progress<br>
+**Status:** Partial chain; arbitrary R/W not proven<br>
 **Test Device:** iPhone 11 Pro Max, iOS 26.1<br>
 **Last Updated:** January 2026
 
@@ -13,10 +13,6 @@ Notes and PoC material for a WebKit/ANGLE chain on iOS 26.1. This repo is not a 
 ## Scope and credit
 
 The CVE-2025-43529 UAF trigger, butterfly reclaim, and `addrof`/`fakeobj` primitives are based on **[jir4vv1t's work](https://github.com/jir4vv1t/CVE-2025-43529)**. My additions are the ANGLE OOB plumbing, PAC-focused analysis, and iOS 26.1 validation.
-
-**Note:** AI assisted with probe analysis; findings were manually validated before publication.
-
----
 
 ## Overview
 
@@ -133,12 +129,11 @@ KERN_INVALID_ADDRESS at 0x0001fffffffffffc -> 0x0000007ffffffffc
 
 The type confusion succeeds because both arrays use **legitimately signed** butterfly pointers - we're just reinterpreting the same memory. Fake objects with arbitrary unsigned pointers crash on PAC check.
 
-### Potential bypass avenues
+### Unproven bypass avenues
 
-1. JIT code paths that might skip authentication
-2. Gadgets that sign arbitrary pointers
-3. Leveraging the ANGLE OOB differently
-4. Alternative primitives that don't require fake objects
+1. JIT paths that use a signed pointer from a legitimate object without re-authenticating attacker-controlled fields.
+2. A reachable signing gadget or API that signs a controlled data pointer with the right context.
+3. A different use of the ANGLE OOB that avoids fake TypedArray/JSArray backing stores entirely.
 
 ---
 
@@ -178,7 +173,7 @@ The type confusion succeeds because both arrays use **legitimately signed** butt
 
 ## Acknowledgments
 
-The CVE-2025-43529 UAF trigger, butterfly reclaim technique, and `addrof`/`fakeobj` primitive construction are based on the work of **[jir4vv1t](https://github.com/jir4vv1t/CVE-2025-43529)**. Their detailed analysis of the DFG Store Barrier bug and race condition exploitation was instrumental to this research.
+The CVE-2025-43529 trigger, butterfly reclaim technique, and `addrof`/`fakeobj` construction are based on **[jir4vv1t/CVE-2025-43529](https://github.com/jir4vv1t/CVE-2025-43529)**. This repo adds iOS 26.1 validation, PAC notes, and ANGLE OOB plumbing.
 
 ---
 
@@ -191,4 +186,4 @@ The CVE-2025-43529 UAF trigger, butterfly reclaim technique, and `addrof`/`fakeo
 
 ---
 
-**Work in progress.**
+**Current state:** useful for reproducing the JSC primitive and PAC blocker; not a complete exploit chain.

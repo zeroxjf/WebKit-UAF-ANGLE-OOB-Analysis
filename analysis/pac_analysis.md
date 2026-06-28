@@ -1,29 +1,8 @@
-# arm64e PAC Analysis for WebKit Exploitation
+# arm64e PAC notes for CVE-2025-43529
 
 ## Overview
 
-This document details the Pointer Authentication Code (PAC) mitigations encountered during exploitation of CVE-2025-43529 on arm64e devices (iPhone XS and newer running iOS 26.1).
-
-## Background: Pointer Authentication
-
-arm64e introduces hardware-enforced pointer authentication using cryptographic signatures embedded in the upper bits of pointers. When a pointer is dereferenced, the CPU verifies its signature before use.
-
-### PAC Keys
-
-| Key | Usage |
-|-----|-------|
-| IA | Instruction Address (code pointers) |
-| IB | Instruction Address (alternate) |
-| DA | Data Address (data pointers) |
-| DB | Data Address (alternate) |
-| GA | Generic Authentication |
-
-### Signing/Verification
-
-```
-Signed Pointer = Raw Pointer | (PAC << 48)
-PAC = f(Raw Pointer, Context/Modifier, Key)
-```
+PAC is the main blocker after the CVE-2025-43529 `addrof`/`fakeobj` primitive on arm64e. Legitimate JSC allocations carry signed pointers; fake objects with attacker-written `m_vector` or `m_butterfly` pointers fault when JavaScriptCore authenticates them.
 
 ## JSC Pointer Authentication
 
@@ -149,54 +128,14 @@ Fake TypedArray at address Y: needs m_vector signed with context(Y)
 ```
 Cannot forge correct signature for different address.
 
-## Potential Bypass Strategies
+## Bypass ideas not yet proven
 
-### 1. JIT Compilation Path
-
-Some JIT-compiled code paths may skip PAC verification:
-- Inline caches
-- Optimized property access
-- Speculative execution paths
-
-**Investigation needed**: Force JIT compilation of array access, analyze generated code.
-
-### 2. PAC Signing Gadget
-
-Find existing code that signs arbitrary pointers:
-```
-; Gadget pattern
-mov x0, [controlled]
-pacia x0, x1
-str x0, [controlled]
-```
-
-**Challenge**: Such gadgets are rare and typically not controllable.
-
-### 3. Structure ID Manipulation
-
-If we can control structure ID lookup:
-1. Create fake Structure with custom property offsets
-2. Property access might read from controlled location
-3. Potentially bypass m_vector PAC check
-
-**Challenge**: Structure table access is also protected.
-
-### 4. PAC Key Corruption
-
-Via separate vulnerability (kernel or hardware):
-1. Corrupt PAC keys in memory
-2. All PAC verification becomes predictable/bypassable
-
-**Challenge**: Requires separate powerful primitive.
-
-### 5. ANGLE Chain
-
-Use ANGLE OOB to corrupt GPU process memory:
-1. GPU process may have different PAC policies
-2. Potentially corrupt WebKit shared memory
-3. Modify pointers in shared IPC buffers
-
-**Status**: Under investigation.
+| Path | What would need to work |
+|------|--------------------------|
+| JIT path | A compiled access path that reuses a legitimately signed pointer and does not authenticate attacker-controlled `m_vector`/`m_butterfly` fields. |
+| Signing gadget/API | Reachable code that signs a controlled data pointer with the same context JavaScriptCore expects. |
+| Structure manipulation | A property-access route that reads attacker-chosen memory without relying on protected array backing-store pointers. |
+| ANGLE OOB | A GPU-side corruption path that avoids the fake TypedArray/JSArray PAC checks entirely. |
 
 ## Conclusion
 
@@ -209,7 +148,7 @@ arm64e PAC effectively prevents the traditional fake object technique for achiev
 But fails to achieve:
 - **read64/write64**: Blocked by PAC on m_vector/butterfly
 
-Further research is needed to bypass PAC or find alternative primitives.
+The next proof should target one bypass path directly and record whether it authenticates attacker-controlled data pointers.
 
 ---
 
